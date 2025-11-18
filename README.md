@@ -1,6 +1,10 @@
-# Bug-Fixing-AI-Assistant
+# Bug-Fixing-AI-Assistant 🤖🔧
 
-An AI assistant dedicated to scanning codebases for bugs, generating fixes autonomously, validating changes with automated tests, and integrating fixes into the codebase via pull requests.
+An intelligent AI-powered assistant that automatically scans codebases for bugs, generates fixes using Claude or GPT, validates changes with automated tests, and integrates fixes into your codebase via pull requests.
+
+[![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
+[![Tests](https://img.shields.io/badge/tests-38%20passed-brightgreen.svg)]()
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Project Structure
 
@@ -34,9 +38,9 @@ Bug-Fixing-AI-Assistant/
     └── README.md           # Test documentation
 ```
 
-## Features
+## ✨ Features
 
-### 1. Code Scanning
+### 1. 🔍 Intelligent Code Scanning
 - **Pattern Detection**: Identifies common code anti-patterns
   - None comparison using `==` instead of `is`
   - Bare except clauses
@@ -46,91 +50,163 @@ Bug-Fixing-AI-Assistant/
   - Dangerous `eval()` and `exec()` usage
   - Unsafe deserialization (pickle)
   - Insecure module imports
+- **Code Quality**: Analyzes code quality issues
+  - High cyclomatic complexity
+  - Too many function arguments
+  - Missing docstrings
+  - Magic numbers
+  - Functions with too many methods (God objects)
 
-### 2. Automated Fixes
-- Generate fixes for detected issues
-- Create unified diff patches
-- Validate fixes with syntax checking
-- Support for multiple fix strategies
+### 2. 🤖 AI-Powered Fix Generation
+- **Claude Integration**: Uses Anthropic's Claude for intelligent fixes
+- **OpenAI Integration**: Supports GPT-4 and GPT-3.5-turbo
+- **Context-Aware**: Provides surrounding code context to AI
+- **Confidence Scoring**: AI rates fix confidence level
+- **Fallback Support**: Falls back to rule-based fixes when AI unavailable
 
-### 3. Validation
-- Python syntax validation
-- Test execution framework
-- Fix verification before applying
+### 3. ⚡ Automated Fix Application
+- **Smart Application**: Automatically applies fixes to files
+- **Backup Creation**: Creates backups before modifying files
+- **Syntax Validation**: Validates fixed code syntax before applying
+- **Dry Run Mode**: Preview changes without modifying files
+- **Batch Processing**: Apply multiple fixes at once
 
-### 4. Pull Request Integration
-- Automated branch creation
-- Commit management
-- PR description generation with detailed fix summaries
+### 4. ✅ Validation & Testing
+- **Python Syntax Validation**: Ensures fixes don't introduce syntax errors
+- **Test Execution**: Runs pytest or unittest after fixing
+- **Configurable**: Control whether tests must pass
+- **Fix Verification**: Validates fixes before committing
 
-## Quick Start
+### 5. 🔄 Pull Request Integration
+- **Automated Branching**: Creates feature branches automatically
+- **Smart Commits**: Generates descriptive commit messages
+- **PR Descriptions**: Creates detailed PR descriptions with fix summaries
+- **Auto-Push**: Optionally pushes to remote automatically
+- **GitHub Integration**: Works with gh CLI for PR creation
+
+## 🚀 Quick Start
 
 ### Installation
 
-Clone the repository:
+1. **Clone the repository:**
 ```bash
 git clone https://github.com/matthewnyc2/Bug-Fixing-AI-Assistant.git
 cd Bug-Fixing-AI-Assistant
 ```
 
-### Usage Examples
+2. **Install dependencies (optional, for AI features):**
+```bash
+# For Anthropic Claude
+pip install anthropic
 
-#### Scan a file for bugs
-```python
-from scanner.core.scanner import CodeScanner
-from scanner.core.report import ReportGenerator
+# For OpenAI GPT
+pip install openai
 
-# Create scanner
-scanner = CodeScanner('/path/to/your/code')
-
-# Scan for Python files
-results = scanner.scan_directory(['.py'])
-
-# Generate report
-report = ReportGenerator.generate_text_report(results)
-print(report)
+# Or install all optional dependencies
+pip install -e ".[full]"
 ```
 
-#### Detect specific patterns
-```python
-from scanner.detectors.pattern_detector import detect_patterns
-from pathlib import Path
+3. **Set up your AI API key (optional):**
+```bash
+# For Anthropic Claude
+export ANTHROPIC_API_KEY=your-api-key-here
 
-# Read file
-file_path = Path('examples/buggy_code.py')
-with open(file_path, 'r') as f:
-    content = f.read()
-
-# Detect issues
-issues = detect_patterns(file_path, content)
-print(f'Found {len(issues)} issues')
+# For OpenAI GPT
+export OPENAI_API_KEY=your-api-key-here
 ```
 
-#### Generate fixes
-```python
-from fixer.generators.fix_generator import FixGenerator
+### Command Line Usage
 
-generator = FixGenerator()
+#### Basic Scanning (No AI)
+```bash
+# Scan current directory and show report
+python main.py
 
-# Generate fix for an issue
-issue = {
-    'type': 'none_comparison',
-    'file': 'test.py',
-    'line': 10,
-    'severity': 'warning'
-}
+# Scan a specific directory
+python main.py /path/to/your/project
 
-fix = generator.generate_fix(issue)
-print(fix['suggestion'])
+# Generate JSON report
+python main.py --report json
 ```
 
-#### Validate fixes
-```python
-from fixer.validators.fix_validator import FixValidator
+#### AI-Powered Fixing
+```bash
+# Scan and generate AI fixes (dry run - no changes)
+python main.py --ai --dry-run
 
-# Validate fixed code
-result = FixValidator.validate_syntax("def hello():\n    return 'world'")
-print(f"Valid: {result['valid']}")
+# Scan, generate AI fixes, and apply them
+python main.py --ai --apply
+
+# Full workflow: scan, fix, test, and create PR
+python main.py --ai --apply --run-tests --create-pr
+```
+
+#### Using Configuration File
+```bash
+# Copy example config
+cp config.example.yaml config.yaml
+
+# Edit config.yaml with your preferences
+# Then run with config
+python main.py --config config.yaml --ai --apply
+```
+
+### Python API Usage
+
+#### Simple Scanning
+```python
+from main import BugFixingAssistant
+
+# Create assistant
+assistant = BugFixingAssistant()
+
+# Scan directory
+issues = assistant.scan_directory('.')
+
+# Print issues
+for issue in issues:
+    print(f"{issue['type']} at {issue['file']}:{issue['line']}")
+```
+
+#### AI-Powered Fixing
+```python
+from main import BugFixingAssistant
+from config import Config
+
+# Create config with AI enabled
+config = Config()
+config.set('ai.provider', 'anthropic')
+config.set('ai.model', 'claude-sonnet-4-5-20250929')
+
+# Create assistant
+assistant = BugFixingAssistant(config)
+
+# Scan and fix
+issues = assistant.scan_directory('.')
+fixes = assistant.generate_fixes(use_ai=True)
+
+# Apply fixes (with backup)
+results = assistant.apply_fixes()
+
+# Show what was fixed
+for result in results:
+    if result['success']:
+        print(f"✓ Fixed {result['file']}")
+        print(result['diff'])
+```
+
+#### Create Pull Request
+```python
+from main import BugFixingAssistant
+
+assistant = BugFixingAssistant()
+issues = assistant.scan_directory('.')
+fixes = assistant.generate_fixes()
+assistant.apply_fixes()
+
+# Create PR with fixes
+pr_result = assistant.create_pr(fixes)
+print(pr_result['pr_description'])
 ```
 
 ## Running Tests
@@ -199,27 +275,54 @@ The fixer module generates suggested fixes for detected issues. It includes vali
 ### PR Handler Module
 The PR handler automates the process of creating pull requests with fixes, including branch management and commit operations.
 
-## Supported Issue Types
+## 📋 Supported Issue Types
 
-| Issue Type | Severity | Auto-Fix |
-|------------|----------|----------|
-| None comparison | Warning | Manual |
-| Bare except | Warning | Manual |
-| Mutable default argument | Warning | Manual |
-| Wildcard import | Info | Manual |
-| Dangerous eval() | Critical | Manual |
-| Dangerous exec() | Critical | Manual |
-| Unsafe pickle | High | Manual |
+| Issue Type | Severity | Auto-Fix | AI-Fix |
+|------------|----------|----------|--------|
+| **Pattern Issues** ||||
+| None comparison (`==` instead of `is`) | Warning | ✅ Yes | ✅ Yes |
+| Bare except clause | Warning | ✅ Yes | ✅ Yes |
+| Mutable default argument | Warning | ❌ No | ✅ Yes |
+| Wildcard import | Info | ❌ No | ✅ Yes |
+| **Security Issues** ||||
+| Dangerous `eval()` usage | Critical | ❌ No | ✅ Yes |
+| Dangerous `exec()` usage | Critical | ❌ No | ✅ Yes |
+| Unsafe pickle deserialization | High | ❌ No | ✅ Yes |
+| Insecure module import | Info | ❌ No | ✅ Yes |
+| **Quality Issues** ||||
+| High cyclomatic complexity | Warning | ❌ No | ✅ Yes |
+| Too many function arguments | Info | ❌ No | ✅ Yes |
+| Missing docstrings | Info | ❌ No | ✅ Yes |
+| Magic numbers | Info | ❌ No | ✅ Yes |
+| Too many methods (God object) | Warning | ❌ No | ✅ Yes |
+| Assert in production code | Info | ❌ No | ✅ Yes |
 
-## Future Enhancements
+**Legend:**
+- ✅ Yes = Fully automated fix available
+- ❌ No = Requires manual intervention or AI
+- AI-Fix = Can be fixed using AI (Claude/GPT)
 
-- [ ] Automated fix application
-- [ ] Support for more programming languages
-- [ ] Integration with CI/CD pipelines
-- [ ] Machine learning-based bug detection
+## 🎯 Roadmap & Future Enhancements
+
+### Completed ✅
+- [x] Automated fix application
+- [x] AI-powered bug detection and fixing
+- [x] Code quality metrics and complexity analysis
+- [x] Comprehensive test suite
+- [x] Configuration file support
+- [x] Pull request automation
+
+### Planned 🚧
+- [ ] Support for more programming languages (JavaScript, TypeScript, Java, Go)
+- [ ] Integration with CI/CD pipelines (GitHub Actions, GitLab CI)
+- [ ] Web dashboard for visualization
+- [ ] Custom rule definitions and plugins
 - [ ] Performance optimization analysis
-- [ ] Code complexity metrics
-- [ ] Custom rule definitions
+- [ ] Dead code detection
+- [ ] Dependency vulnerability scanning
+- [ ] Integration with issue trackers (Jira, Linear)
+- [ ] Multi-file refactoring support
+- [ ] Incremental scanning (only changed files)
 
 ## License
 

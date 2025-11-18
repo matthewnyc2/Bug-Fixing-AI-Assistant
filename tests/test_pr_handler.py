@@ -46,7 +46,7 @@ class TestPRCreator(unittest.TestCase):
         test_file.write_text("# Test Repo")
         subprocess.run(['git', 'add', 'README.md'], cwd=self.temp_dir, capture_output=True)
         subprocess.run(
-            ['git', 'commit', '-m', 'Initial commit'],
+            ['git', '-c', 'commit.gpgsign=false', 'commit', '-m', 'Initial commit'],
             cwd=self.temp_dir,
             capture_output=True
         )

@@ -1,0 +1,77 @@
+# Example configuration for Bug-Fixing-AI-Assistant
+# Copy this file to config.yaml and customize as needed
+
+# Scanner settings
+scanner:
+  file_extensions:
+    - .py
+    # Add more extensions as needed:
+    # - .js
+    # - .ts
+    # - .java
+
+  exclude_patterns:
+    - "**/venv/**"
+    - "**/.venv/**"
+    - "**/node_modules/**"
+    - "**/__pycache__/**"
+    - "**/.git/**"
+    - "**/build/**"
+    - "**/dist/**"
+
+  max_file_size_mb: 10
+
+# Fixer settings
+fixer:
+  # Automatically apply fixes (use with caution)
+  auto_apply_fixes: false
+
+  # Create backup files before fixing
+  create_backup: true
+  backup_suffix: ".backup"
+
+# AI settings
+ai:
+  # AI provider: 'anthropic' or 'openai'
+  provider: anthropic
+
+  # Model to use
+  # For Anthropic: claude-sonnet-4-5-20250929, claude-opus-4-20250514
+  # For OpenAI: gpt-4, gpt-4-turbo, gpt-3.5-turbo
+  model: claude-sonnet-4-5-20250929
+
+  # Environment variable containing API key
+  # Set with: export ANTHROPIC_API_KEY=your-key-here
+  # Or: export OPENAI_API_KEY=your-key-here
+  api_key_env_var: ANTHROPIC_API_KEY
+
+  # Maximum tokens for AI responses
+  max_tokens: 4000
+
+  # Temperature for AI responses (0.0 = deterministic, 1.0 = creative)
+  temperature: 0.0
+
+# Pull request settings
+pr:
+  # Base branch for PRs
+  base_branch: main
+
+  # Prefix for bugfix branches
+  branch_prefix: "bugfix/ai-"
+
+  # Automatically push to remote
+  auto_push: false
+
+  # Automatically create pull request
+  create_pr: false
+
+# Validation settings
+validation:
+  # Run tests after applying fixes
+  run_tests: true
+
+  # Command to run tests
+  test_command: "python -m pytest"
+
+  # Require tests to pass before creating PR
+  require_tests_pass: false

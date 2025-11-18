@@ -26,28 +26,28 @@ class PRCreator:
     def create_branch(self, branch_name: str) -> Dict[str, Any]:
         """
         Create a new branch for bug fixes.
-        
+
         Args:
             branch_name: Name of the branch to create
-        
+
         Returns:
             Result dictionary
         """
         try:
-            # Check if branch already exists
-            result = subprocess.run(
-                ['git', 'rev-parse', '--verify', branch_name],
+            # Check if branch already exists using git branch --list
+            check_result = subprocess.run(
+                ['git', 'branch', '--list', branch_name],
                 cwd=self.repo_path,
                 capture_output=True,
                 text=True
             )
-            
-            if result.returncode == 0:
+
+            if check_result.stdout.strip():
                 return {
                     'success': False,
                     'message': f'Branch {branch_name} already exists'
                 }
-            
+
             # Create new branch
             result = subprocess.run(
                 ['git', 'checkout', '-b', branch_name],
@@ -55,13 +55,13 @@ class PRCreator:
                 capture_output=True,
                 text=True
             )
-            
+
             return {
                 'success': result.returncode == 0,
                 'branch': branch_name,
                 'message': result.stdout if result.returncode == 0 else result.stderr
             }
-        
+
         except Exception as e:
             return {
                 'success': False,
@@ -95,9 +95,9 @@ class PRCreator:
                     check=True
                 )
             
-            # Commit
+            # Commit (disable GPG signing for compatibility)
             result = subprocess.run(
-                ['git', 'commit', '-m', message],
+                ['git', '-c', 'commit.gpgsign=false', 'commit', '-m', message],
                 cwd=self.repo_path,
                 capture_output=True,
                 text=True
