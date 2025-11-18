@@ -1,0 +1,17 @@
+# Core dependencies (Python standard library is sufficient for basic functionality)
+# No external dependencies required for core scanner, fixer, and PR handler
+
+# Optional AI Integration
+anthropic>=0.18.0  # For Claude AI integration
+openai>=1.0.0      # For OpenAI GPT integration
+
+# Development and Testing
+pytest>=7.4.0      # Testing framework (alternative to unittest)
+pytest-cov>=4.1.0  # Coverage reporting
+black>=23.0.0      # Code formatting
+flake8>=6.0.0      # Linting
+mypy>=1.0.0        # Type checking
+
+# Optional CI/CD Integration
+requests>=2.31.0   # For GitHub API calls without gh CLI
+pyyaml>=6.0.0      # For configuration files
